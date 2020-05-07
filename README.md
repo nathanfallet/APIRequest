@@ -36,10 +36,14 @@ APIRequest("GET", path: "/path/to/api").with(name: "custom", value: "parameter")
 }
 ```
 
-See [full documentation](documentation.md) for more details.
+See the [full documentation](documentation.md) for a complete guide.
 
 ## Examples in production
 
 From `Delta: Math helper`:
 - [Initialize the API configuration](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Utils/AppDelegate.swift#L58)
 - [Fetch data from an API](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Controllers/CloudHomeTableViewController.swift#L57)
+
+## Donate to the developer
+
+Feel free to make a donation to help the developer to make more great content! [Donate now](https://paypal.me/NathanFallet)
