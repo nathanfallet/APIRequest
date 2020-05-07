@@ -6,7 +6,7 @@ final class APIRequestTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(APIRequest().text, "Hello, World!")
+        //XCTAssertEqual(APIRequest().text, "Hello, World!")
     }
 
     static var allTests = [
