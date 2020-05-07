@@ -1,5 +1,12 @@
 # APIRequest
 
+[![License](https://img.shields.io/github/license/GroupeMINASTE/APIRequest.swift)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/GroupeMINASTE/APIRequest.swift)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/GroupeMINASTE/APIRequest.swift)]()
+[![Code Size](https://img.shields.io/github/languages/code-size/GroupeMINASTE/APIRequest.swift)]()
+[![CodeFactor](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift/badge)](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift)
+[![Open Source Helpers](https://www.codetriage.com/groupeminaste/apirequest.swift/badges/users.svg)](https://www.codetriage.com/groupeminaste/apirequest.swift)
+
 A swift package to manage a REST API
 
 ## Installation
