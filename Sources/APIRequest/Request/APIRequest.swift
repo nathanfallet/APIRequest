@@ -58,14 +58,19 @@ public class APIRequest {
     /// Add a get parameter
     /// - Parameters:
     ///   - name: The name of the variable
+    /// - Returns: The modified APIRequest
+    public func with(name: String) -> APIRequest {
+        queryItems.append(URLQueryItem(name: name, value: nil))
+        return self
+    }
+    
+    /// Add a get parameter
+    /// - Parameters:
+    ///   - name: The name of the variable
     ///   - value: The value of the variable
     /// - Returns: The modified APIRequest
-    public func with<S>(name: String, value: S? = nil) -> APIRequest where S: LosslessStringConvertible {
-        if let value = value {
-            queryItems.append(URLQueryItem(name: name, value: String(value)))
-        } else {
-            queryItems.append(URLQueryItem(name: name, value: nil))
-        }
+    public func with<S>(name: String, value: S) -> APIRequest where S: LosslessStringConvertible {
+        queryItems.append(URLQueryItem(name: name, value: String(value)))
         return self
     }
     
@@ -74,10 +79,8 @@ public class APIRequest {
     ///   - header: The name of the header
     ///   - value: The value of the header
     /// - Returns: The modified APIRequest
-    public func with<S>(header: String, value: S?) -> APIRequest where S: LosslessStringConvertible {
-        if let value = value {
-            headers[header] = String(value)
-        }
+    public func with<S>(header: String, value: S) -> APIRequest where S: LosslessStringConvertible {
+        headers[header] = String(value)
         return self
     }
     
