@@ -33,7 +33,7 @@ public class APIRequest {
     private var configuration: APIConfiguration
     private var headers: [String: String]
     private var queryItems: [URLQueryItem]
-    private var body: [String: Any]?
+    private var body: Encodable?
     
     /// Create a request to the API
     /// - Parameters:
@@ -44,7 +44,7 @@ public class APIRequest {
         // Check that a configuration is specified
         guard let configuration = configuration else {
             // Throw an error
-            fatalError("APIConfiguration is not nil! Try to set APIConfiguration.current at launch.")
+            fatalError("APIConfiguration is nil! Try to set APIConfiguration.current at launch.")
         }
         
         // Get request parameters
@@ -60,27 +60,9 @@ public class APIRequest {
     ///   - name: The name of the variable
     ///   - value: The value of the variable
     /// - Returns: The modified APIRequest
-    public func with(name: String, value: String) -> APIRequest {
-        queryItems.append(URLQueryItem(name: name, value: value))
+    public func with<S>(name: String, value: S) -> APIRequest where S : Sequence, S.Element == Character {
+        queryItems.append(URLQueryItem(name: name, value: String(value)))
         return self
-    }
-    
-    /// Add a get parameter
-    /// - Parameters:
-    ///   - name: The name of the variable
-    ///   - value: The value of the variable
-    /// - Returns: The modified APIRequest
-    public func with(name: String, value: Int) -> APIRequest {
-        return with(name: name, value: "\(value)")
-    }
-    
-    /// Add a get parameter
-    /// - Parameters:
-    ///   - name: The name of the variable
-    ///   - value: The value of the variable
-    /// - Returns: The modified APIRequest
-    public func with(name: String, value: Int64) -> APIRequest {
-        return with(name: name, value: "\(value)")
     }
     
     /// Add a header to the request
@@ -88,8 +70,8 @@ public class APIRequest {
     ///   - header: The name of the header
     ///   - value: The value of the header
     /// - Returns: The modified APIRequest
-    public func with(header: String, value: String) -> APIRequest {
-        headers[header] = value
+    public func with<S>(header: String, value: S) -> APIRequest where S : Sequence, S.Element == Character {
+        headers[header] = String(value)
         return self
     }
     
@@ -97,7 +79,7 @@ public class APIRequest {
     /// - Parameters:
     ///   - body: The body of the request
     /// - Returns: The modified APIRequest
-    public func with(body: [String: Any]) -> APIRequest {
+    public func with(body: Encodable) -> APIRequest {
         self.body = body
         return self
     }
@@ -134,75 +116,51 @@ public class APIRequest {
                 request.addValue(value, forHTTPHeaderField: key)
             }
             
+            // Get headers from request
+            for (key, value) in headers {
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+            
             // Set body
             if let body = body {
-                do {
-                    request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
-                } catch let error {
-                    print(error.localizedDescription)
-                    DispatchQueue.main.async {
-                        completionHandler(nil, .invalidRequest)
-                    }
-                    return
-                }
+                request.httpBody = configuration.encoder.encode(from: body)
             }
             
             // Launch the request to server
-            URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            URLSession.shared.dataTask(with: request) { data, response, error in
                 // Check if there is an error
                 if let error = error {
                     print(error.localizedDescription)
-                    DispatchQueue.main.async {
-                        completionHandler(nil, .offline)
-                    }
+                    self.end(data: nil, status: .error, completionHandler: completionHandler)
                     return
                 }
                 
                 // Get data and response
                 if let data = data, let response = response as? HTTPURLResponse {
-                    do {
-                        // Parse JSON data
-                        let parsed = try JSONDecoder().decode(type, from: data)
-                        
-                        DispatchQueue.main.async {
-                            completionHandler(parsed, self.status(forCode: response.statusCode))
-                        }
-                    } catch let jsonError {
-                        print(jsonError)
-                        DispatchQueue.main.async {
-                            completionHandler(nil, self.status(forCode: response.statusCode))
-                        }
-                    }
+                    // Decode the data with the specified decoder
+                    self.end(data: self.configuration.decoder.decode(from: data, as: type), status: APIResponseStatus.status(forCode: response.statusCode), completionHandler: completionHandler)
                 } else {
                     // We consider we don't have a valid response
-                    DispatchQueue.main.async {
-                        completionHandler(nil, .offline)
-                    }
+                    self.end(data: nil, status: .offline, completionHandler: completionHandler)
                 }
             }.resume()
         } else {
             // URL is not valid
-            DispatchQueue.main.async {
-                completionHandler(nil, .invalidRequest)
-            }
+            self.end(data: nil, status: .error, completionHandler: completionHandler)
         }
     }
     
-    // Get status for code
-    private func status(forCode code: Int) -> APIResponseStatus {
-        switch code {
-        case 200:
-            return .ok
-        case 201:
-            return .created
-        case 400:
-            return .invalidRequest
-        case 401:
-            return .unauthorized
-        case 404:
-            return .notFound
-        default:
-            return .offline
+    // End the request and call completion handler
+    private func end<T>(data: T?, status: APIResponseStatus, completionHandler: @escaping CompletionHandler<T>) where T: Decodable {
+        if configuration.completionInMainThread {
+            // Call main thread
+            DispatchQueue.main.async {
+                // And complete
+                completionHandler(data, status)
+            }
+        } else {
+            // Just complete
+            completionHandler(data, status)
         }
     }
     

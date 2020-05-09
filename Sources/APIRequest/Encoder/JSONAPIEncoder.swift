@@ -19,8 +19,14 @@
 
 import Foundation
 
-public enum APIResponseStatus {
+public class JSONAPIEncoder: APIEncoder {
     
-    case ok, created, notFound, unauthorized, invalidRequest, offline, loading
+    /// Encode the object to JSON
+    /// - Parameters:
+    ///   - object: The object to Encode
+    /// - Returns: The encoded data, or nil if an error occurs
+    public func encode(from object: Encodable) -> Data? {
+        return object.toJSONData()
+    }
     
 }
