@@ -33,7 +33,7 @@ public class APIRequest {
     private var configuration: APIConfiguration
     private var headers: [String: String]
     private var queryItems: [URLQueryItem]
-    private var body: Encodable?
+    private var body: Data?
     
     /// Create a request to the API
     /// - Parameters:
@@ -60,7 +60,7 @@ public class APIRequest {
     ///   - name: The name of the variable
     ///   - value: The value of the variable
     /// - Returns: The modified APIRequest
-    public func with<S>(name: String, value: S) -> APIRequest where S : Sequence, S.Element == Character {
+    public func with<S>(name: String, value: S) -> APIRequest where S: LosslessStringConvertible {
         queryItems.append(URLQueryItem(name: name, value: String(value)))
         return self
     }
@@ -70,7 +70,7 @@ public class APIRequest {
     ///   - header: The name of the header
     ///   - value: The value of the header
     /// - Returns: The modified APIRequest
-    public func with<S>(header: String, value: S) -> APIRequest where S : Sequence, S.Element == Character {
+    public func with<S>(header: String, value: S) -> APIRequest where S: LosslessStringConvertible {
         headers[header] = String(value)
         return self
     }
@@ -79,8 +79,26 @@ public class APIRequest {
     /// - Parameters:
     ///   - body: The body of the request
     /// - Returns: The modified APIRequest
-    public func with(body: Encodable) -> APIRequest {
+    public func with(body: Data?) -> APIRequest {
         self.body = body
+        return self
+    }
+    
+    /// Add a body to the request (for POST or PUT requests)
+    /// - Parameters:
+    ///   - body: The body of the request
+    /// - Returns: The modified APIRequest
+    public func with(body: Encodable) -> APIRequest {
+        self.body = configuration.encoder.encode(from: body)
+        return self
+    }
+    
+    /// Add a body to the request (for POST or PUT requests)
+    /// - Parameters:
+    ///   - body: The body of the request
+    /// - Returns: The modified APIRequest
+    public func with(body: [String: Any]) -> APIRequest {
+        self.body = configuration.encoder.encode(from: body)
         return self
     }
     
@@ -123,7 +141,7 @@ public class APIRequest {
             
             // Set body
             if let body = body {
-                request.httpBody = configuration.encoder.encode(from: body)
+                request.httpBody = body
             }
             
             // Launch the request to server

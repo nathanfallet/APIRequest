@@ -25,4 +25,8 @@ public protocol APIEncoder {
     /// - Parameter object: The object to encode, provided by the request
     func encode(from object: Encodable) -> Data?
     
+    /// Encode the input object as data
+    /// - Parameter object: The object to encode, provided by the request
+    func encode(from dictionary: [String: Any]) -> Data?
+    
 }

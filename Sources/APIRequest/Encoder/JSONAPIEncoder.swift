@@ -29,4 +29,12 @@ public class JSONAPIEncoder: APIEncoder {
         return object.toJSONData()
     }
     
+    /// Encode the dictionary to JSON
+    /// - Parameters:
+    ///   - object: The object to Encode
+    /// - Returns: The encoded data, or nil if an error occurs
+    public func encode(from dictionary: [String: Any]) -> Data? {
+        return try? JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
+    }
+    
 }
