@@ -40,7 +40,7 @@ APIConfiguration.current = APIConfiguration(host: "api.example.com", headers: {
 // Warning: The path should start with a / to avoid malformed URLs
 var request = APIRequest("GET", path: "/path/to/api")
 
-// Add GET parameters (you can add strings or integers)
+// Add GET parameters (you can add strings, integers, bools, ...)
 request = request.with(name: "id", value: 4)
 
 // In case of POST/PUT request, add a body
@@ -52,8 +52,8 @@ request = request.with(body: [
 // Add a custom header (for this request only)
 request = request.with(header: "X-CUSTOM-HEADER", value: "CustomValue")
 
-// And execute the request, decoding the result as [String: Any]
-request.execute([String: Any].self) { data, status in
+// And execute the request, decoding the result as [String: String]
+request.execute([String: String].self) { data, status in
     // Check received data
     if let data = data {
         // Process the result of the response
@@ -65,7 +65,7 @@ request.execute([String: Any].self) { data, status in
 }
 
 // You can write all of this in a single line: (RECOMMANDED)
-APIRequest("GET", path: "/path/to/api").with(name: "id", value: 4).with(header: "X-CUSTOM-HEADER", value: "CustomValue").execute([String: Any].self) { data, status in
+APIRequest("GET", path: "/path/to/api").with(name: "id", value: 4).with(header: "X-CUSTOM-HEADER", value: "CustomValue").execute([String: String].self) { data, status in
     // Here nothing changes
     // ...
 }

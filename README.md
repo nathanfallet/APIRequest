@@ -23,8 +23,8 @@ import APIRequest
 APIConfiguration.current = APIConfiguration(host: "api.example.com")
 
 // And then call your API
-// This is an equivalent to get `https://api.example.com/path/to/api?custom=parameter` and parse the response from JSON to a dictionary [String: Any]
-APIRequest("GET", path: "/path/to/api").with(name: "custom", value: "parameter").execute([String: Any].self) { data, status in
+// This is an equivalent to get `https://api.example.com/path/to/api?custom=parameter` and parse the response from JSON to a dictionary [String: String]
+APIRequest("GET", path: "/path/to/api").with(name: "custom", value: "parameter").execute([String: String].self) { data, status in
     // Check the data and status
     if let data = data, status == .ok {
         // Do what you want with your data
@@ -43,9 +43,12 @@ See the [full documentation](documentation.md) for a complete guide.
 ### Full example project
 Check out the [full example project](https://github.com/NathanFallet/APIRequestExample) made in a [youtube tutorial](https://youtu.be/HBbrZJ0f5gg).
 
-### In [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800)
+### Delta: Math helper
 - [Initialize the API configuration](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Utils/AppDelegate.swift#L58)
 - [Fetch data from an API](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Controllers/CloudHomeTableViewController.swift#L57)
+
+### HiberLink
+- [Send data to API](https://github.com/GroupeMINASTE/HiberLink-iOS/blob/63264417d980caabf5b7d9a27efb58fd90b93162/HiberLink/Controllers/UploadViewController.swift#L124)
 
 ## Donate to the developer
 
