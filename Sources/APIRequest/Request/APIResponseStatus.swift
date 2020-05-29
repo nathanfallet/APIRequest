@@ -27,6 +27,9 @@ public enum APIResponseStatus {
     // 201 Created
     case created
     
+    // 204 No Content
+    case noContent
+    
     // 400 Bad Request
     case badRequest
     
@@ -38,6 +41,9 @@ public enum APIResponseStatus {
     
     // 404 Not Found
     case notFound
+    
+    // 500 Internal server error
+    case internalServerError
     
     // Error while creating the request
     case error
@@ -57,6 +63,8 @@ public enum APIResponseStatus {
             return .ok
         case 201:
             return .created
+        case 204:
+            return .noContent
         case 400:
             return .badRequest
         case 401:
@@ -65,6 +73,8 @@ public enum APIResponseStatus {
             return .forbidden
         case 404:
             return .notFound
+        case 500:
+            return .internalServerError
         default:
             return .error
         }

@@ -32,6 +32,7 @@ public class APIConfiguration {
     public var encoder: APIEncoder
     public var decoder: APIDecoder
     public var completionInMainThread: Bool = true
+    public var allowsCellularAccess: Bool = true
     
     /// Initialize a configuration
     /// - Parameters:
@@ -68,6 +69,14 @@ public class APIConfiguration {
     /// - Returns: The new APIConfiguration
     public func with(completionInMainThread: Bool) -> APIConfiguration {
         self.completionInMainThread = completionInMainThread
+        return self
+    }
+    
+    /// Set a if the request is allowed to user cellular data
+    /// - Parameter allowsCellularAccess: Boolean if enabled
+    /// - Returns: The new APIConfiguration
+    public func with(allowsCellularAccess: Bool) -> APIConfiguration {
+        self.allowsCellularAccess = allowsCellularAccess
         return self
     }
     

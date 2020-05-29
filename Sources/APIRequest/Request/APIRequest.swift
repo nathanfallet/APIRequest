@@ -137,6 +137,7 @@ public class APIRequest {
             var request = URLRequest(url: url)
             request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
             request.httpMethod = method
+            request.allowsCellularAccess = configuration.allowsCellularAccess
             
             // Get headers from configuration
             for (key, value) in configuration.headers() {
