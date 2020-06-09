@@ -19,13 +19,18 @@
 
 import Foundation
 
-public class APIRequest {
+public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     
     /// Completion handler of an APIRequest
     /// - Parameters:
     ///   - data: The decoded data from API
     ///   - status: The status of the request
     public typealias CompletionHandler<T> = (_ data: T?, _ status: APIResponseStatus) -> () where T: Decodable
+    
+    /// Upload progress handler of an APIRequest
+    /// - Parameters:
+    ///   - progress: The current upload progress, between 0 and 1
+    public typealias UploadProgress = (_ progress: Double) -> ()
     
     // Object properties
     private var method: String
@@ -34,6 +39,7 @@ public class APIRequest {
     private var headers: [String: String]
     private var queryItems: [URLQueryItem]
     private var body: Data?
+    private var uploadProgress: UploadProgress?
     
     /// Create a request to the API
     /// - Parameters:
@@ -111,6 +117,14 @@ public class APIRequest {
         return self
     }
     
+    /// Set a progress handler for upload
+    /// - Parameter uploadProgress: The progress handler
+    /// - Returns: The modified APIRequest
+    public func with(uploadProgress: @escaping UploadProgress) -> APIRequest {
+        self.uploadProgress = uploadProgress
+        return self
+    }
+    
     // Construct URL
     private func getURL() -> URL? {
         var components = URLComponents()
@@ -154,8 +168,11 @@ public class APIRequest {
                 request.httpBody = body
             }
             
+            // Create the session
+            let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
+            
             // Launch the request to server
-            URLSession.shared.dataTask(with: request) { data, response, error in
+            session.dataTask(with: request) { data, response, error in
                 // Check if there is an error
                 if let error = error {
                     print(error.localizedDescription)
@@ -190,6 +207,18 @@ public class APIRequest {
             // Just complete
             completionHandler(data, status)
         }
+    }
+    
+    /// Update the upload state for the request
+    /// - Parameters:
+    ///   - session: The session
+    ///   - task: The task
+    ///   - bytesSent: The bytes sent
+    ///   - totalBytesSent: The total bytes sent
+    ///   - totalBytesExpectedToSend: The total bytes expected to send
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        // Call the upload progress (if specified)
+        uploadProgress?(Double(totalBytesSent) / Double(totalBytesExpectedToSend))
     }
     
 }
