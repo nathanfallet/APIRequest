@@ -19,65 +19,108 @@
 
 import Foundation
 
-public enum APIResponseStatus {
+public enum APIResponseStatus: Int, CaseIterable {
     
-    // 200 OK
-    case ok
+    // 1xx
+    case `continue` = 100
+    case switchingProtocols = 101
+    case processing = 102
+    case earlyHints = 103
     
-    // 201 Created
-    case created
+    // 2xx
+    case ok = 200
+    case created = 201
+    case accepted = 202
+    case nonAuthoritativeInformation = 203
+    case noContent = 204
+    case resetContent = 205
+    case partialContent = 206
+    case multiStatus = 207
+    case alreadyReported = 208
+    case imUsed = 226
     
-    // 204 No Content
-    case noContent
+    // 3xx
+    case multipleChoices = 300
+    case movedPermanently = 301
+    case found = 302
+    case seeOther = 303
+    case notModified = 304
+    case useProxy = 305
+    case switchProxy = 306
+    case temporaryRedirect = 307
+    case permanentRedirect = 308
     
-    // 400 Bad Request
-    case badRequest
+    // 4xx
+    case badRequest = 400
+    case unauthorized = 401
+    case paymentRequired = 402
+    case forbidden = 403
+    case notFound = 404
+    case methodNotAllowed = 405
+    case notAcceptable = 406
+    case proxyAuthenticationRequired = 407
+    case requestTimeout = 408
+    case conflict = 409
+    case gone = 410
+    case lengthRequired = 411
+    case preconditionFailed = 412
+    case payloadTooLarge = 413
+    case requestURITooLong = 414
+    case unsupportedMediaType = 415
+    case requestedRangeNotSatisfiable = 416
+    case expectationFailed = 417
+    case iMATeapot = 418
+    case misdirectedRequest = 421
+    case unprocessableEntity = 422
+    case locked = 423
+    case failedDependency = 424
+    case tooEarly = 425
+    case upgradeRequired = 426
+    case preconditionRequired = 428
+    case tooManyRequests = 429
+    case requestHeaderFieldsTooLarge = 431
+    case connectionClosedWithoutAResponse = 444
+    case unavailableForLegalReasons = 451
+    case clientClosedRequest = 499
     
-    // 401 Unauthorized
-    case unauthorized
+    // 5xx
+    case internalServerError = 500
+    case notImplemented = 501
+    case badGateway = 502
+    case serviceUnavailable = 503
+    case gatewayTimeout = 504
+    case httpVersionNotSupported = 505
+    case variantAlsoNegotiates = 506
+    case insufficientStorage = 507
+    case loopDetected = 508
+    case notExtended = 510
+    case networkAuthenticationRequired = 511
+    case originUnknownError = 520
+    case originDown = 521
+    case originTimedOut = 522
+    case originUnreachable = 523
+    case originTimeout = 524
+    case sslHandshakeFailed = 525
+    case invalidSSLCertificate = 526
+    case networkConnectTimeoutError = 599
     
-    // 403 Forbidden
-    case forbidden
-    
-    // 404 Not Found
-    case notFound
-    
-    // 500 Internal server error
-    case internalServerError
+    // Unknown code
+    case unknown = 0
     
     // Error while creating the request
-    case error
+    case error = -1
     
     // Device is offline
-    case offline
+    case offline = -2
     
     // Device is loading ressource
-    case loading
+    case loading = -3
     
     /// Return the status associated with the HTTP status code, or error if the status is not registered
     /// - Parameter code: The HTTP status code
     /// - Returns: The APIResponseStatus
     public static func status(forCode code: Int) -> APIResponseStatus {
-        switch code {
-        case 200:
-            return .ok
-        case 201:
-            return .created
-        case 204:
-            return .noContent
-        case 400:
-            return .badRequest
-        case 401:
-            return .unauthorized
-        case 403:
-            return .forbidden
-        case 404:
-            return .notFound
-        case 500:
-            return .internalServerError
-        default:
-            return .error
-        }
+        return allCases.first(where: { $0.rawValue == code }) ?? .unknown
     }
     
 }
