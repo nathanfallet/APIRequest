@@ -41,6 +41,9 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     private var body: Data?
     private var uploadProgress: UploadProgress?
     
+    // Task
+    private var task: URLSessionDataTask?
+    
     /// Create a request to the API
     /// - Parameters:
     ///   - method: The request method (GET, POST, PUT, DELETE, ...)
@@ -65,6 +68,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// - Parameters:
     ///   - name: The name of the variable
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with(name: String) -> APIRequest {
         queryItems.append(URLQueryItem(name: name, value: nil))
         return self
@@ -75,6 +79,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     ///   - name: The name of the variable
     ///   - value: The value of the variable
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with<S>(name: String, value: S) -> APIRequest where S: LosslessStringConvertible {
         queryItems.append(URLQueryItem(name: name, value: String(value)))
         return self
@@ -85,6 +90,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     ///   - header: The name of the header
     ///   - value: The value of the header
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with<S>(header: String, value: S) -> APIRequest where S: LosslessStringConvertible {
         headers[header] = String(value)
         return self
@@ -94,6 +100,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// - Parameters:
     ///   - body: The body of the request
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with(body: Data?) -> APIRequest {
         self.body = body
         return self
@@ -103,6 +110,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// - Parameters:
     ///   - body: The body of the request
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with(body: Encodable) -> APIRequest {
         self.body = configuration.encoder.encode(from: body)
         return self
@@ -112,6 +120,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// - Parameters:
     ///   - body: The body of the request
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with(body: [String: Any]) -> APIRequest {
         self.body = configuration.encoder.encode(from: body)
         return self
@@ -120,6 +129,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// Set a progress handler for upload
     /// - Parameter uploadProgress: The progress handler
     /// - Returns: The modified APIRequest
+    @discardableResult
     public func with(uploadProgress: @escaping UploadProgress) -> APIRequest {
         self.uploadProgress = uploadProgress
         return self
@@ -144,7 +154,8 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     /// - Parameters:
     ///   - type: The type to decode the received data
     ///   - completionHandler: The completion handler of the request
-    public func execute<T>(_ type: T.Type, completionHandler: @escaping CompletionHandler<T>) where T: Decodable {
+    @discardableResult
+    public func execute<T>(_ type: T.Type, completionHandler: @escaping CompletionHandler<T>) -> APIRequest where T: Decodable {
         // Check url validity
         if let url = getURL() {
             // Create the request based on give parameters
@@ -172,7 +183,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
             let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
             
             // Launch the request to server
-            session.dataTask(with: request) { data, response, error in
+            task = session.dataTask(with: request) { data, response, error in
                 // Check if there is an error
                 if let error = error {
                     print(error.localizedDescription)
@@ -188,11 +199,23 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
                     // We consider we don't have a valid response
                     self.end(data: nil, status: .offline, completionHandler: completionHandler)
                 }
-            }.resume()
+            }
+            task?.resume()
         } else {
             // URL is not valid
             self.end(data: nil, status: .error, completionHandler: completionHandler)
         }
+        
+        // Return the request object
+        return self
+    }
+    
+    /// Cancel the ongoing request
+    @discardableResult
+    public func cancel() -> APIRequest {
+        task?.cancel()
+        task = nil
+        return self
     }
     
     // End the request and call completion handler
