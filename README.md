@@ -7,7 +7,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift/badge)](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift)
 [![Open Source Helpers](https://www.codetriage.com/groupeminaste/apirequest.swift/badges/users.svg)](https://www.codetriage.com/groupeminaste/apirequest.swift)
 
-A swift package to manage a REST API
+A swift package to interact with a REST API
 
 ## Installation
 
