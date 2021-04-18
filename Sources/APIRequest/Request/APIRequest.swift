@@ -186,7 +186,12 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
             task = session.dataTask(with: request) { data, response, error in
                 // Check if there is an error
                 if let error = error {
-                    print(error.localizedDescription)
+                    if (error as NSError).code == -1009 {
+                        // Device is offline
+                        self.end(data: nil, status: .offline, completionHandler: completionHandler)
+                        return
+                    }
+                    // Unknown server error
                     self.end(data: nil, status: .error, completionHandler: completionHandler)
                     return
                 }
@@ -197,7 +202,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
                     self.end(data: self.configuration.decoder.decode(from: data, as: type), status: APIResponseStatus.status(forCode: response.statusCode), completionHandler: completionHandler)
                 } else {
                     // We consider we don't have a valid response
-                    self.end(data: nil, status: .offline, completionHandler: completionHandler)
+                    self.end(data: nil, status: .error, completionHandler: completionHandler)
                 }
             }
             task?.resume()
