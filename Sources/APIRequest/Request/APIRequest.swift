@@ -39,6 +39,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     private var headers: [String: String]
     private var queryItems: [URLQueryItem]
     private var body: Data?
+    private var contentType: String?
     private var uploadProgress: UploadProgress?
     
     // Task
@@ -113,6 +114,7 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     @discardableResult
     public func with(body: Encodable) -> APIRequest {
         self.body = configuration.encoder.encode(from: body)
+        self.contentType = configuration.encoder.contentType
         return self
     }
     
@@ -123,6 +125,17 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     @discardableResult
     public func with(body: [String: Any]) -> APIRequest {
         self.body = configuration.encoder.encode(from: body)
+        self.contentType = configuration.encoder.contentType
+        return self
+    }
+    
+    /// Add a content type to the request (for POST or PUT requests)
+    /// - Parameters:
+    ///   - contentType: The content type of the request
+    /// - Returns: The modified APIRequest
+    @discardableResult
+    public func with(contentType: String) -> APIRequest {
+        self.contentType = contentType
         return self
     }
     
@@ -177,6 +190,9 @@ public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
             // Set body
             if let body = body {
                 request.httpBody = body
+                if let contentType = contentType {
+                    request.addValue(contentType, forHTTPHeaderField: "Content-Type")
+                }
             }
             
             // Create the session

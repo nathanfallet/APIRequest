@@ -29,4 +29,7 @@ public protocol APIEncoder {
     /// - Parameter object: The object to encode, provided by the request
     func encode(from dictionary: [String: Any]) -> Data?
     
+    /// Content type of the request
+    var contentType: String? { get }
+    
 }

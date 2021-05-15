@@ -37,4 +37,10 @@ public class JSONAPIEncoder: APIEncoder {
         return try? JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
     }
     
+    /// Content type of the request
+    /// For JSON, it's `application/json`
+    public var contentType: String? {
+        "application/json"
+    }
+    
 }
