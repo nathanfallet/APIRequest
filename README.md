@@ -53,3 +53,7 @@ Check out the [full example project](https://github.com/NathanFallet/APIRequestE
 ## Donate to the developer
 
 Feel free to make a donation to help the developer to make more great content! [Donate now](https://paypal.me/NathanFallet)
+
+## Android version
+
+This package is also available for Android: [APIRequest.java](https://github.com/GroupeMINASTE/APIRequest.java)
