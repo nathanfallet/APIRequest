@@ -18,6 +18,7 @@
 */
 
 import Foundation
+import FoundationNetworking
 
 public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     
