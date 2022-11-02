@@ -18,7 +18,10 @@
 */
 
 import Foundation
+
+#if canImport(FoundationNetworking)
 import FoundationNetworking
+#endif
 
 public class APIRequest: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     
