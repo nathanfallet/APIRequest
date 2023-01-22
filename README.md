@@ -1,19 +1,37 @@
 # APIRequest
 
-[![License](https://img.shields.io/github/license/GroupeMINASTE/APIRequest.swift)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/GroupeMINASTE/APIRequest.swift)]()
-[![Pull Requests](https://img.shields.io/github/issues-pr/GroupeMINASTE/APIRequest.swift)]()
-[![Code Size](https://img.shields.io/github/languages/code-size/GroupeMINASTE/APIRequest.swift)]()
-[![CodeFactor](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift/badge)](https://www.codefactor.io/repository/github/groupeminaste/apirequest.swift)
-[![Open Source Helpers](https://www.codetriage.com/groupeminaste/apirequest.swift/badges/users.svg)](https://www.codetriage.com/groupeminaste/apirequest.swift)
+[![License](https://img.shields.io/github/license/NathanFallet/APIRequest)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/NathanFallet/APIRequest)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/NathanFallet/APIRequest)]()
+[![Code Size](https://img.shields.io/github/languages/code-size/NathanFallet/APIRequest)]()
+[![CodeFactor](https://www.codefactor.io/repository/github/NathanFallet/APIRequest/badge)](https://www.codefactor.io/repository/github/NathanFallet/APIRequest)
+[![Open Source Helpers](https://www.codetriage.com/NathanFallet/APIRequest/badges/users.svg)](https://www.codetriage.com/NathanFallet/APIRequest)
 
-A swift package to interact with a REST API
+A swift package/android library to interact with a REST API.
 
 ## Installation
 
-Add `https://github.com/GroupeMINASTE/APIRequest.swift.git` to your Swift Package configuration (or using the Xcode menu: `File` > `Swift Packages` > `Add Package Dependency`)
+### iOS
+
+Add `https://github.com/NathanFallet/APIRequest.git` to your Swift Package configuration (or using the Xcode menu: `File` > `Swift Packages` > `Add Package Dependency`)
+
+### Android
+
+Add the following to your `build.gradle` file:
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'me.nathanfallet.apirequest:apirequest:1.0.4'
+}
+```
 
 ## Usage
+
+### iOS
 
 ```swift
 // Import the package
@@ -36,24 +54,31 @@ APIRequest("GET", path: "/path/to/api").with(name: "custom", value: "parameter")
 }
 ```
 
-See the [full documentation](documentation.md) for a complete guide.
+See the [full documentation](DOCUMENTATION_IOS.md) for a complete guide.
+
+### Android
+
+```kotlin
+// When your app starts, set the default configuration
+APIConfiguration.current = APIConfiguration("api.example.com")
+
+// And then call your API
+// This is an equivalent to get `https://api.example.com/path/to/api?custom=parameter` and parse the response from JSON
+APIRequest("GET", "/path/to/api")
+    .with("custom", "parameter")
+    .execute { result, status ->
+        
+    }
+```
+
+See the [full documentation](DOCUMENTATION_ANDROID.md) for a complete guide.
 
 ## Examples
 
 ### Full example project
+
 Check out the [full example project](https://github.com/NathanFallet/APIRequestExample) made in a [youtube tutorial](https://youtu.be/HBbrZJ0f5gg).
-
-### Delta: Math helper
-- [Initialize the API configuration](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Utils/AppDelegate.swift#L58)
-- [Fetch data from an API](https://github.com/GroupeMINASTE/Delta-iOS/blob/72d6d2edc7d7b1c8d65958144204c5f580e8ce9a/Delta/Controllers/CloudHomeTableViewController.swift#L57)
-
-### HiberLink
-- [Send data to API](https://github.com/GroupeMINASTE/HiberLink-iOS/blob/63264417d980caabf5b7d9a27efb58fd90b93162/HiberLink/Controllers/UploadViewController.swift#L124)
 
 ## Donate to the developer
 
 Feel free to make a donation to help the developer to make more great content! [Donate now](https://paypal.me/paynathanfallet)
-
-## Android version
-
-This package is also available for Android: [APIRequest.java](https://github.com/GroupeMINASTE/APIRequest.java)
