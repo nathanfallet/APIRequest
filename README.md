@@ -5,7 +5,7 @@
 [![Pull Requests](https://img.shields.io/github/issues-pr/NathanFallet/APIRequest)]()
 [![Code Size](https://img.shields.io/github/languages/code-size/NathanFallet/APIRequest)]()
 [![CodeFactor](https://www.codefactor.io/repository/github/NathanFallet/APIRequest/badge)](https://www.codefactor.io/repository/github/NathanFallet/APIRequest)
-[![Open Source Helpers](https://www.codetriage.com/NathanFallet/APIRequest/badges/users.svg)](https://www.codetriage.com/NathanFallet/APIRequest)
+[![Open Source Helpers](https://www.codetriage.com/nathanfallet/apirequest/badges/users.svg)](https://www.codetriage.com/nathanfallet/apirequest)
 
 A swift package/android library to interact with a REST API.
 
